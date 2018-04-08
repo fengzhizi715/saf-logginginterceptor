@@ -92,13 +92,12 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         }
     }
 
-    private fun subtypeIsNotFile(subtype:String?):Boolean {
-
-        return subtype != null && (subtype.contains("json")
+    private fun subtypeIsNotFile(subtype:String?):Boolean
+            = subtype != null && (subtype.contains("json")
                 || subtype.contains("xml")
                 || subtype.contains("plain")
                 || subtype.contains("html"))
-    }
+
 
     class Builder {
 
@@ -167,7 +166,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          * Set response log tag
          *
          * @param tag response log tag
-         * *
+         *
          * @return Builder
          */
         fun responseTag(tag: String): Builder {
