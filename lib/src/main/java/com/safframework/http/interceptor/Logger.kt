@@ -45,7 +45,7 @@ class Logger {
                 val requestBody = "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-                builder.append(requestBody+logLines2(bodyString))
+                builder.append(requestBody+logLines(bodyString))
             }
 
             builder.append(BOTTOM_BORDER)
@@ -56,21 +56,17 @@ class Logger {
         @JvmStatic
         fun printFileRequest(builder: LoggingInterceptor.Builder, request: Request) {
 
-            val requestBody = LINE_SEPARATOR + binaryBodyToString(request)
-
             val tag = builder.getTag(true)
-//            Log.i(tag, TOP_BORDER)
-//
-//            logLines(tag, getRequest(request))
-//            logLines(tag, requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-//
-//            Log.i(tag, BOTTOM_BORDER)
-
 
             val builder = StringBuilder()
             builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
             builder.append(getRequest(request))
-            builder.append(requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+
+            val requestBody = "║ "+LINE_SEPARATOR
+
+            val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            builder.append(requestBody+logLines(binaryBodyString))
             builder.append(BOTTOM_BORDER)
 
             Log.i(tag, builder.toString())
@@ -78,7 +74,7 @@ class Logger {
 
         @JvmStatic
         fun printJsonResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
-                                       code: Int, headers: String, bodyString: String, segments: List<String>) {
+                              code: Int, headers: String, bodyString: String, segments: List<String>) {
 
             val tag = builder.getTag(false)
 
@@ -90,7 +86,7 @@ class Logger {
 
             val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            builder.append(responseBody+logLines2(bodyString))
+            builder.append(responseBody+logLines(bodyString))
 
             builder.append(BOTTOM_BORDER)
 
@@ -99,11 +95,15 @@ class Logger {
 
         @JvmStatic
         fun printFileResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
-                                       code: Int, headers: String, segments: List<String>) {
-//            val tag = builder.getTag(false)
-//            Log.i(tag, TOP_BORDER)
-//            logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments))
-//            Log.i(tag, BOTTOM_BORDER)
+                              code: Int, headers: String, segments: List<String>) {
+
+            val tag = builder.getTag(false)
+            val builder = StringBuilder()
+            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            builder.append(getResponse(headers, chainMs, code, isSuccessful, segments))
+            builder.append(BOTTOM_BORDER)
+
+            Log.i(tag, builder.toString())
         }
 
         private fun getRequest(request: Request): String {
@@ -111,6 +111,7 @@ class Logger {
             val header = request.headers().toString()
             val message: String = "║ URL: " + request.url() + DOUBLE_SEPARATOR + "║ Method: @" + request.method() + DOUBLE_SEPARATOR +
                     if (isEmpty(header)) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+
             return message
         }
 
@@ -142,7 +143,7 @@ class Logger {
             return builder.toString()
         }
 
-        private fun logLines2(lines: Array<String>): String {
+        private fun logLines(lines: Array<String>): String {
             val sb = StringBuilder()
             for (line in lines) {
                 val lineLength = line.length
