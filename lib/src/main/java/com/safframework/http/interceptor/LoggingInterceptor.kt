@@ -1,6 +1,7 @@
 package com.safframework.http.interceptor
 
 import okhttp3.*
+import okhttp3.internal.http.HttpMethod
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -50,10 +51,16 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         }
 
         if (builder.requestFlag) {
-            if (subtypeIsNotFile(rSubtype)) {
+            if (request.method() == "GET") {
+
                 Logger.printJsonRequest(builder, request)
             } else {
-                Logger.printFileRequest(builder, request)
+
+                if (subtypeIsNotFile(rSubtype)) {
+                    Logger.printJsonRequest(builder, request)
+                } else {
+                    Logger.printFileRequest(builder, request)
+                }
             }
         }
 

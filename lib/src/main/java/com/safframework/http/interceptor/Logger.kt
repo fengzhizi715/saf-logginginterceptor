@@ -27,20 +27,30 @@ class Logger {
         private val TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val LINE_SEPARATOR = System.getProperty("line.separator")
-        private val DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR
+        private val DOUBLE_SEPARATOR = LINE_SEPARATOR + "║ " + LINE_SEPARATOR
 
         private fun isEmpty(line: String) = line.isEmpty() || N == line || T == line || line.trim { it <= ' ' }.isEmpty()
 
         @JvmStatic
         fun printJsonRequest(builder: LoggingInterceptor.Builder, request: Request) {
-            val requestBody = LINE_SEPARATOR + "Body:" + LINE_SEPARATOR + bodyToString(request)
+
             val tag = builder.getTag(true)
-            Log.i(tag, TOP_BORDER)
 
-            logLines(tag, getRequest(request))
-            logLines(tag, requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            val builder = StringBuilder()
+            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            builder.append(getRequest(request))
 
-            Log.i(tag, BOTTOM_BORDER)
+            if (request.method() != "GET") { // get请求不需要body
+
+                val requestBody = "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
+                val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+                builder.append(requestBody+logLines2(bodyString))
+            }
+
+            builder.append(BOTTOM_BORDER)
+
+            Log.i(tag, builder.toString())
         }
 
         @JvmStatic
@@ -49,52 +59,70 @@ class Logger {
             val requestBody = LINE_SEPARATOR + binaryBodyToString(request)
 
             val tag = builder.getTag(true)
-            Log.i(tag, TOP_BORDER)
+//            Log.i(tag, TOP_BORDER)
+//
+//            logLines(tag, getRequest(request))
+//            logLines(tag, requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+//
+//            Log.i(tag, BOTTOM_BORDER)
 
-            logLines(tag, getRequest(request))
-            logLines(tag, requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
 
-            Log.i(tag, BOTTOM_BORDER)
+            val builder = StringBuilder()
+            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            builder.append(getRequest(request))
+            builder.append(requestBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            builder.append(BOTTOM_BORDER)
+
+            Log.i(tag, builder.toString())
         }
 
         @JvmStatic
         fun printJsonResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
                                        code: Int, headers: String, bodyString: String, segments: List<String>) {
-            val responseBody = LINE_SEPARATOR + "Body:" + LINE_SEPARATOR + getJsonString(bodyString)
-            val tag = builder.getTag(false)
-            Log.i(tag, TOP_BORDER)
 
-            logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments))
-            logLines(tag, responseBody.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-            Log.i(tag, BOTTOM_BORDER)
+            val tag = builder.getTag(false)
+
+            val builder = StringBuilder()
+            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            builder.append(getResponse(headers, chainMs, code, isSuccessful, segments))
+
+            val responseBody = "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
+
+            val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+            builder.append(responseBody+logLines2(bodyString))
+
+            builder.append(BOTTOM_BORDER)
+
+            Log.i(tag, builder.toString())
         }
 
         @JvmStatic
         fun printFileResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
                                        code: Int, headers: String, segments: List<String>) {
-            val tag = builder.getTag(false)
-            Log.i(tag, TOP_BORDER)
-            logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments))
-            Log.i(tag, BOTTOM_BORDER)
+//            val tag = builder.getTag(false)
+//            Log.i(tag, TOP_BORDER)
+//            logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments))
+//            Log.i(tag, BOTTOM_BORDER)
         }
 
-        private fun getRequest(request: Request): Array<String> {
+        private fun getRequest(request: Request): String {
 
             val header = request.headers().toString()
-            val message: String = "URL: " + request.url() + DOUBLE_SEPARATOR + "Method: @" + request.method() + DOUBLE_SEPARATOR +
-                    if (isEmpty(header)) "" else "Headers:" + LINE_SEPARATOR + dotHeaders(header)
-            return message.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val message: String = "║ URL: " + request.url() + DOUBLE_SEPARATOR + "║ Method: @" + request.method() + DOUBLE_SEPARATOR +
+                    if (isEmpty(header)) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+            return message
         }
 
         private fun getResponse(header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
-                                segments: List<String>): Array<String> {
+                                segments: List<String>): String {
 
-            val segmentString = slashSegments(segments)
-            val message: String = (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + DOUBLE_SEPARATOR + "Status Code: " +
+            val segmentString = "║ " + slashSegments(segments)
+            val message: String = (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + DOUBLE_SEPARATOR + "║ Status Code: " +
                     code + DOUBLE_SEPARATOR +
-                    if (isEmpty(header)) "" else "Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                    if (isEmpty(header)) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
 
-            return message.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            return message
         }
 
         private fun slashSegments(segments: List<String>): String {
@@ -109,21 +137,24 @@ class Logger {
             val headers = header.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val builder = StringBuilder()
             for (item in headers) {
-                builder.append("- ").append(item).append("\n")
+                builder.append("║ - ").append(item).append("\n")
             }
             return builder.toString()
         }
 
-        private fun logLines(tag: String, lines: Array<String>) {
+        private fun logLines2(lines: Array<String>): String {
+            val sb = StringBuilder()
             for (line in lines) {
                 val lineLength = line.length
                 for (i in 0..lineLength / MAX_LONG_SIZE) {
                     val start = i * MAX_LONG_SIZE
                     var end = (i + 1) * MAX_LONG_SIZE
                     end = if (end > line.length) line.length else end
-                    Log.i(tag, "║ " + line.substring(start, end))
+                    sb.append("║ " + line.substring(start, end)).append(Logger.LINE_SEPARATOR)
                 }
             }
+
+            return sb.toString()
         }
 
         private fun bodyToString(request: Request): String {
