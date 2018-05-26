@@ -6,8 +6,16 @@
 <a href="http://www.methodscount.com/?lib=com.safframework.log%3Asaf-logginginterceptor%3A1.0.4"><img src="https://img.shields.io/badge/Methods and size-core: 157 | deps: 25898 | 30 KB-e91e63.svg"/></a>
 
 
+# 下载安装
+  Gradle:
 
-用于记录OKHttp网络请求的日志的拦截器，它是纯Kotlin编写
+```groovy
+implementation 'com.safframework.log:saf-logginginterceptor:1.1.1'
+```  
+  
+
+# 使用方法
+它是用于记录OKHttp网络请求的日志的拦截器，纯Kotlin编写
 
 ```java
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
