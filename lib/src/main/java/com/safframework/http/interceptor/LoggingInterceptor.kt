@@ -113,6 +113,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         var isDebug: Boolean = false
         var requestFlag:Boolean = false
         var responseFlag:Boolean = false
+        var hideVerticalLineFlag:Boolean = false
 
         private var requestTag: String? = null
         private var responseTag: String? = null
@@ -200,6 +201,17 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          */
         fun response(): Builder {
             this.responseFlag = true
+            return this
+        }
+
+        /**
+         * Set hide vertical line flag
+         *
+         *
+         * @return Builder
+         */
+        fun hideVerticalLine(): Builder {
+            this.hideVerticalLineFlag = true
             return this
         }
 

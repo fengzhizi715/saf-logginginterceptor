@@ -29,7 +29,7 @@ class Logger {
         private val LINE_SEPARATOR = System.getProperty("line.separator")
         private val DOUBLE_SEPARATOR = LINE_SEPARATOR + "║ " + LINE_SEPARATOR
 
-        private fun isEmpty(line: String) = line.isEmpty() || N == line || T == line || line.trim { it <= ' ' }.isEmpty()
+        private fun String.isLineEmpty() = isEmpty() || N == this || T == this || this.trim { it <= ' ' }.isEmpty()
 
         @JvmStatic
         fun printJsonRequest(builder: LoggingInterceptor.Builder, request: Request) {
@@ -110,7 +110,7 @@ class Logger {
 
             val header = request.headers().toString()
             val message: String = "║ URL: " + request.url() + DOUBLE_SEPARATOR + "║ Method: @" + request.method() + DOUBLE_SEPARATOR +
-                    if (isEmpty(header)) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                    if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
 
             return message
         }
@@ -121,7 +121,7 @@ class Logger {
             val segmentString = "║ " + slashSegments(segments)
             val message: String = (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + DOUBLE_SEPARATOR + "║ Status Code: " +
                     code + DOUBLE_SEPARATOR +
-                    if (isEmpty(header)) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                    if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
 
             return message
         }
