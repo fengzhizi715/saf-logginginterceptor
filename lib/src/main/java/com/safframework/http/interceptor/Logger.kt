@@ -17,7 +17,7 @@ class Logger {
     companion object {
 
         private val JSON_INDENT = 3
-        private val MAX_LONG_SIZE = 110
+        private val MAX_LONG_SIZE = 120
         private val N = "\n"
         private val T = "\t"
 
@@ -36,21 +36,21 @@ class Logger {
 
             val tag = builder.getTag(true)
 
-            val builder = StringBuilder()
-            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            builder.append(getRequest(request))
+            val sb = StringBuilder()
+            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append(getRequest(request))
 
             if (request.method() != "GET") { // get请求不需要body
 
                 val requestBody = "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-                builder.append(requestBody+logLines(bodyString))
+                sb.append(requestBody+logLines(bodyString))
             }
 
-            builder.append(BOTTOM_BORDER)
+            sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, builder.toString())
+            Log.i(tag, sb.toString())
         }
 
         @JvmStatic
@@ -58,18 +58,18 @@ class Logger {
 
             val tag = builder.getTag(true)
 
-            val builder = StringBuilder()
-            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            builder.append(getRequest(request))
+            val sb = StringBuilder()
+            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append(getRequest(request))
 
             val requestBody = "║ "+LINE_SEPARATOR
 
             val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            builder.append(requestBody+logLines(binaryBodyString))
-            builder.append(BOTTOM_BORDER)
+            sb.append(requestBody+logLines(binaryBodyString))
+            sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, builder.toString())
+            Log.i(tag, sb.toString())
         }
 
         @JvmStatic
@@ -78,19 +78,19 @@ class Logger {
 
             val tag = builder.getTag(false)
 
-            val builder = StringBuilder()
-            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            builder.append(getResponse(headers, chainMs, code, isSuccessful, segments))
+            val sb = StringBuilder()
+            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
 
             val responseBody = "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
 
             val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            builder.append(responseBody+logLines(bodyString))
+            sb.append(responseBody+logLines(bodyString))
 
-            builder.append(BOTTOM_BORDER)
+            sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, builder.toString())
+            Log.i(tag, sb.toString())
         }
 
         @JvmStatic
@@ -98,12 +98,13 @@ class Logger {
                               code: Int, headers: String, segments: List<String>) {
 
             val tag = builder.getTag(false)
-            val builder = StringBuilder()
-            builder.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            builder.append(getResponse(headers, chainMs, code, isSuccessful, segments))
-            builder.append(BOTTOM_BORDER)
 
-            Log.i(tag, builder.toString())
+            val sb = StringBuilder()
+            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
+            sb.append(BOTTOM_BORDER)
+
+            Log.i(tag, sb.toString())
         }
 
         private fun getRequest(request: Request): String {

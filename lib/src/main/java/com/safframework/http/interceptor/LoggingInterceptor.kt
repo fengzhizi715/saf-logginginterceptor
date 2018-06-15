@@ -1,7 +1,6 @@
 package com.safframework.http.interceptor
 
 import okhttp3.*
-import okhttp3.internal.http.HttpMethod
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
