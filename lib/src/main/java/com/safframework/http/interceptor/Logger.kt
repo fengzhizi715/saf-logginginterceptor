@@ -27,11 +27,10 @@ class Logger {
         private val TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val LINE_SEPARATOR = System.getProperty("line.separator")
-        private val DOUBLE_SEPARATOR = LINE_SEPARATOR + "║ " + LINE_SEPARATOR
 
         private fun String.isLineEmpty() = isEmpty() || N == this || T == this || this.trim { it <= ' ' }.isEmpty()
 
-        private fun getDoubleSeparator(hideVerticalLine:Boolean):String = if (hideVerticalLine) LINE_SEPARATOR + " " + LINE_SEPARATOR else LINE_SEPARATOR + "║ " + LINE_SEPARATOR
+        private fun getDoubleSeparator(hideVerticalLine:Boolean=false):String = if (hideVerticalLine) LINE_SEPARATOR + " " + LINE_SEPARATOR else LINE_SEPARATOR + "║ " + LINE_SEPARATOR
 
         /**
          * 支持超长日志的打印
@@ -41,6 +40,7 @@ class Logger {
             if (logString.length > 4000) {
 
                 var i = 0
+
                 while (i < logString.length) {
 
                     if (i + 4000 < logString.length)
@@ -109,7 +109,7 @@ class Logger {
 
             val sb = StringBuilder()
             sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
+            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments,hideVerticalLine))
 
             val responseBody = if (hideVerticalLine) {
                 " "+LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
@@ -122,8 +122,6 @@ class Logger {
             sb.append(responseBody+logLines(bodyString,hideVerticalLine))
 
             sb.append(BOTTOM_BORDER)
-
-//            Log.i(tag, sb.toString())
 
             printLog(tag, sb.toString())
         }
@@ -152,20 +150,31 @@ class Logger {
                         if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
             } else {
 
-                return "║ URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + "║ Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
-                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+                return "║ URL: " + request.url() + getDoubleSeparator() + "║ Method: @" + request.method() + getDoubleSeparator() +
+                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
         private fun getResponse(header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
-                                segments: List<String>): String {
+                                segments: List<String>, hideVerticalLine:Boolean=false): String {
 
-            val segmentString = "║ " + slashSegments(segments)
-            val message: String = (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + DOUBLE_SEPARATOR + "║ Status Code: " +
-                    code + DOUBLE_SEPARATOR +
+            var segmentString:String?
+
+            if (hideVerticalLine) {
+
+                segmentString = " " + slashSegments(segments)
+
+                return  (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
+                    code + getDoubleSeparator(hideVerticalLine) +
+                    if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+            } else {
+
+                segmentString = "║ " + slashSegments(segments)
+
+                return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
+                    code + getDoubleSeparator() +
                     if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
-
-            return message
+            }
         }
 
         private fun slashSegments(segments: List<String>): String {
