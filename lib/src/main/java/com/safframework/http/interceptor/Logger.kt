@@ -74,9 +74,12 @@ class Logger {
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
                 sb.append(requestBody+logLines(bodyString,hideVerticalLine))
-            }
+                sb.append(BOTTOM_BORDER)
+            } else if (request.method() == "GET") {
 
-            sb.append(BOTTOM_BORDER)
+                sb.append(Logger.LINE_SEPARATOR)
+                sb.append(BOTTOM_BORDER)
+            }
 
             Log.i(tag, sb.toString())
         }
