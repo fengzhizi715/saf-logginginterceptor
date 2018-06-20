@@ -61,7 +61,7 @@ class Logger {
 
             val sb = StringBuilder()
             sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            sb.append(getRequest(request,hideVerticalLine))
+            sb.append(getRequest(request,hideVerticalLine)).append(LINE_SEPARATOR)
 
             if (request.method() != "GET") { // get请求不需要body
 
@@ -148,7 +148,7 @@ class Logger {
             if (hideVerticalLine) {
 
                 return " URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
-                        if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+                        if (header.isLineEmpty())  " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
             } else {
 
                 return "║ URL: " + request.url() + getDoubleSeparator() + "║ Method: @" + request.method() + getDoubleSeparator() +
@@ -166,15 +166,15 @@ class Logger {
                 segmentString = " " + slashSegments(segments)
 
                 return  (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
-                    code + getDoubleSeparator(hideVerticalLine) +
-                    if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+                        code + getDoubleSeparator(hideVerticalLine) +
+                        if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
             } else {
 
                 segmentString = "║ " + slashSegments(segments)
 
                 return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
-                    code + getDoubleSeparator() +
-                    if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                        code + getDoubleSeparator() +
+                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
