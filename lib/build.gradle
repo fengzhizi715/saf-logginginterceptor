@@ -66,7 +66,7 @@ publish{
     userOrg = 'fengzhizi715'
     groupId = 'com.safframework.log'
     artifactId = 'saf-logginginterceptor'
-    publishVersion = '1.2.0'
+    publishVersion = '1.2.1'
     desc = 'this is a log interceptor for okhttp,written by kotlin'
     website = 'https://github.com/fengzhizi715/SAF-Kotlin-log'
 }
