@@ -44,9 +44,9 @@ class Logger {
                 while (i < logString.length) {
 
                     if (i + 4000 < logString.length)
-                        Log.i("$tag$i", logString.substring(i, i + 4000))
+                        Log.i(tag, logString.substring(i, i + 4000))
                     else
-                        Log.i("$tag$i", logString.substring(i, logString.length))
+                        Log.i(tag, logString.substring(i, logString.length))
                     i += 4000
                 }
             } else
@@ -74,12 +74,10 @@ class Logger {
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
                 sb.append(requestBody+logLines(bodyString,hideVerticalLine))
-                sb.append(BOTTOM_BORDER)
-            } else if (request.method() == "GET") {
 
-                sb.append(Logger.LINE_SEPARATOR)
-                sb.append(BOTTOM_BORDER)
             }
+
+            sb.append(BOTTOM_BORDER)
 
             Log.i(tag, sb.toString())
         }
@@ -191,14 +189,21 @@ class Logger {
         private fun dotHeaders(header: String, hideVerticalLine:Boolean=false): String {
             val headers = header.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val builder = StringBuilder()
-            for (item in headers) {
 
-                if (hideVerticalLine) {
-                    builder.append(" - ").append(item).append("\n")
-                } else {
-                    builder.append("║ - ").append(item).append("\n")
+            if (headers!=null && headers.isNotEmpty()) {
+                for (item in headers) {
+
+                    if (hideVerticalLine) {
+                        builder.append(" - ").append(item).append("\n")
+                    } else {
+                        builder.append("║ - ").append(item).append("\n")
+                    }
                 }
+            } else {
+
+                builder.append(Logger.LINE_SEPARATOR)
             }
+
             return builder.toString()
         }
 
