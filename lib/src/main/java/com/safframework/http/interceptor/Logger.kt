@@ -61,7 +61,7 @@ class Logger {
 
             val sb = StringBuilder()
             sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
-            sb.append(getRequest(request,hideVerticalLine)).append(LINE_SEPARATOR)
+            sb.append(getRequest(request,hideVerticalLine))
 
             if (request.method() != "GET") { // get请求不需要body
 
@@ -75,6 +75,9 @@ class Logger {
 
                 sb.append(requestBody+logLines(bodyString,hideVerticalLine))
 
+            } else {
+
+                sb.append(LINE_SEPARATOR)
             }
 
             sb.append(BOTTOM_BORDER)
