@@ -77,7 +77,12 @@ class Logger {
 
             } else {
 
-                sb.append(LINE_SEPARATOR)
+                val header = request.headers().toString()
+
+                if (header.isLineEmpty()) {
+
+                    sb.append(Logger.LINE_SEPARATOR)
+                }
             }
 
             sb.append(BOTTOM_BORDER)
