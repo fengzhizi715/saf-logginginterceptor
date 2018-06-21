@@ -6,9 +6,11 @@
 <a href="http://www.methodscount.com/?lib=com.safframework.log%3Asaf-logginginterceptor%3A1.0.4"><img src="https://img.shields.io/badge/Methods and size-core: 157 | deps: 25898 | 30 KB-e91e63.svg"/></a>
 
 # 特性
-* 支持http request、response格式化的输出。
+
+* 支持http request、response的数据格式化的输出。
 * 支持超长日志的打印，解决了Logcat 4K字符截断的问题。
-﻿* 支持格式化时去掉竖线边框显示日志，方便将网络请求复制到post man之类的工具，或者将结果复制给服务端的同学。
+* 支持格式化时能够去掉竖线边框显示日志。方便将网络请求复制到post man之类的工具，以及方便将结果复制给服务端的同学。
+
 
 # 下载安装
   Gradle:
