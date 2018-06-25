@@ -65,3 +65,14 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
        //设置拦截器
        builder.addInterceptor(loggingInterceptor)
 ```
+
+Get请求显示的效果：
+![](images/Get请求.png)
+
+
+返回Response的效果：
+![](images/返回有边框的Response.png)
+
+
+隐藏竖线边框，方便复制request、reqponse的内容：
+![](images/隐藏边框的效果.png)
