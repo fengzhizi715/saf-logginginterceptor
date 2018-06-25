@@ -5,14 +5,14 @@
 [![License](https://img.shields.io/badge/license-Apache%202-lightgrey.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 <a href="http://www.methodscount.com/?lib=com.safframework.log%3Asaf-logginginterceptor%3A1.0.4"><img src="https://img.shields.io/badge/Methods and size-core: 157 | deps: 25898 | 30 KB-e91e63.svg"/></a>
 
-# 特性
+# 一. 特性
 
 * 支持http request、response的数据格式化的输出。
 * 支持超长日志的打印，解决了Logcat 4K字符截断的问题。
 * 支持格式化时去掉竖线边框显示日志。方便将网络请求复制到Postman之类的工具，方便将请求结果复制给服务端的同学。
 
 
-# 下载安装
+# 二. 下载安装
   Gradle:
 
 ```groovy
@@ -20,7 +20,7 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
 ```  
   
 
-# 使用方法
+# 三. 使用方法
 它是用于记录OKHttp网络请求的日志的拦截器，纯Kotlin编写
 
 
@@ -66,13 +66,18 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
        builder.addInterceptor(loggingInterceptor)
 ```
 
-Get请求显示的效果：
+# 四. 效果显示
+
+## 4.1 Get请求显示的效果：
+
 ![](images/Get请求.png)
 
 
-返回Response的效果：
+## 4.2 返回Response的效果：
+
 ![](images/返回有边框的Response.png)
 
 
-隐藏竖线边框，方便复制request、reqponse的内容：
+## 4.3 隐藏竖线边框，方便复制request、reqponse的内容：
+
 ![](images/隐藏边框的效果.png)
