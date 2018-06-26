@@ -18,13 +18,12 @@
 ```groovy
 implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
 ```  
-  
+
 
 # 三. 使用方法
 它是用于记录OKHttp网络请求的日志的拦截器，纯Kotlin编写
 
-
-在Java中使用：
+## 3.1 在Java中使用
 
 ```java
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -45,7 +44,7 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
             builder.addInterceptor(loggingInterceptor);
 ```
 
-在Kotlin中使用：
+## 3.2 在Kotlin中使用
 
 ```kotlin
         val builder = OkHttpClient.Builder()
@@ -61,7 +60,7 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
                 .responseTag("Response")
                 //.hideVerticalLine()// 隐藏竖线边框
                 .build()
-                
+
        //设置拦截器
        builder.addInterceptor(loggingInterceptor)
 ```
