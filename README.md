@@ -16,7 +16,7 @@
   Gradle:
 
 ```groovy
-implementation 'com.safframework.log:saf-logginginterceptor:1.3.0'
+implementation 'com.safframework.log:saf-logginginterceptor:1.3.1'
 ```  
 
 
