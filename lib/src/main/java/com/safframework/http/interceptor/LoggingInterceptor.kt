@@ -2,6 +2,7 @@ package com.safframework.http.interceptor
 
 import okhttp3.*
 import java.io.IOException
+import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
 /**
@@ -10,9 +11,11 @@ import java.util.concurrent.TimeUnit
 class LoggingInterceptor private constructor(private val builder: LoggingInterceptor.Builder) : Interceptor {
 
     private val isDebug: Boolean
+    private val charset:Charset
 
     init {
         this.isDebug = builder.isDebug
+        this.charset = Charset.forName("UTF-8")
     }
 
     @Throws(IOException::class)
@@ -76,26 +79,25 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
             val contentType = responseBody!!.contentType()
 
             var subtype: String? = null
-            val body: ResponseBody
 
             if (contentType != null) {
                 subtype = contentType.subtype()
             }
 
             if (subtypeIsNotFile(subtype)) {
-                val bodyString = Logger.getJsonString(responseBody.string())
+
+                val source = responseBody.source()
+                source.request(Long.MAX_VALUE)
+                val buffer = source.buffer()
+
+                val bodyString = Logger.getJsonString(buffer.clone().readString(charset))
                 Logger.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString, segmentList)
-                body = ResponseBody.create(contentType, bodyString)
             } else {
                 Logger.printFileResponse(builder, chainMs, isSuccessful, code, header, segmentList)
-                return response
             }
-
-            return response.newBuilder().body(body).build()
-        } else {
-
-            return response
         }
+
+        return response
     }
 
     private fun subtypeIsNotFile(subtype:String?):Boolean
