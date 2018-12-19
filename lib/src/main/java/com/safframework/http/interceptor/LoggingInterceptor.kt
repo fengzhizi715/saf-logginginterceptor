@@ -70,7 +70,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         val response = chain.proceed(request)
 
         if (builder.responseFlag) {
-            val segmentList = (request.tag() as Request).url().encodedPathSegments()
+            val segmentList = request.url().encodedPathSegments()
             val chainMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - st)
             val header = response.headers().toString()
             val code = response.code()
