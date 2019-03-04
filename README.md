@@ -11,12 +11,11 @@
 * 支持超长日志的打印，解决了Logcat 4K字符截断的问题。
 * 支持格式化时去掉竖线边框显示日志。方便将网络请求复制到Postman之类的工具，方便将请求结果复制给服务端的同学。
 
-
 # 二. 下载安装
   Gradle:
 
 ```groovy
-implementation 'com.safframework.log:saf-logginginterceptor:1.3.4'
+implementation 'com.safframework.log:saf-logginginterceptor:1.4.0'
 ```  
 
 
