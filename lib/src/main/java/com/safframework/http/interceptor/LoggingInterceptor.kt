@@ -44,7 +44,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         var rContentType: MediaType? = null
         if (requestBody != null) {
-            rContentType = request.body()!!.contentType()
+            rContentType = requestBody.contentType()
         }
 
         var rSubtype: String? = null
