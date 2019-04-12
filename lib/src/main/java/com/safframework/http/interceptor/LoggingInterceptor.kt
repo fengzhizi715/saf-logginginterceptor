@@ -116,8 +116,8 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         var responseFlag:Boolean = false
         var hideVerticalLineFlag:Boolean = false
 
-        private var requestTag: String? = null
-        private var responseTag: String? = null
+        private lateinit var requestTag: String
+        private lateinit var responseTag: String
         private val builder: Headers.Builder
 
         init {
@@ -129,9 +129,9 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         internal fun getTag(isRequest: Boolean): String {
             if (isRequest) {
-                return if (requestTag.isNullOrBlank()) TAG else requestTag!!
+                return if (requestTag.isNullOrBlank()) TAG else requestTag
             } else {
-                return if (responseTag.isNullOrBlank()) TAG else responseTag!!
+                return if (responseTag.isNullOrBlank()) TAG else responseTag
             }
         }
 
