@@ -60,7 +60,7 @@ class Logger {
             val hideVerticalLine = builder.hideVerticalLineFlag
 
             val sb = StringBuilder()
-            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getRequest(request,hideVerticalLine))
 
             if (request.method() != "GET") { // get请求不需要body
@@ -96,7 +96,7 @@ class Logger {
             val tag = builder.getTag(true)
 
             val sb = StringBuilder()
-            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getRequest(request))
 
             val requestBody = "║ "+LINE_SEPARATOR
@@ -117,7 +117,7 @@ class Logger {
             val hideVerticalLine = builder.hideVerticalLineFlag
 
             val sb = StringBuilder()
-            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getResponse(headers, chainMs, code, isSuccessful, segments,hideVerticalLine))
 
             val responseBody = if (hideVerticalLine) {
@@ -209,7 +209,7 @@ class Logger {
                 }
             } else {
 
-                builder.append(Logger.LINE_SEPARATOR)
+                builder.append(LINE_SEPARATOR)
             }
 
             return builder.toString()
@@ -225,9 +225,9 @@ class Logger {
                     end = if (end > line.length) line.length else end
 
                     if (hideVerticalLine) {
-                        sb.append(" " + line.substring(start, end)).append(Logger.LINE_SEPARATOR)
+                        sb.append(" " + line.substring(start, end)).append(LINE_SEPARATOR)
                     } else {
-                        sb.append("║ " + line.substring(start, end)).append(Logger.LINE_SEPARATOR)
+                        sb.append("║ " + line.substring(start, end)).append(LINE_SEPARATOR)
                     }
 
                 }
@@ -242,7 +242,7 @@ class Logger {
                 val buffer = Buffer()
                 if (copy.body() == null) return ""
 
-                copy.body()!!.writeTo(buffer)
+                copy.body()?.writeTo(buffer)
                 return getJsonString(buffer.readUtf8())
             } catch (e: IOException) {
                 return "{\"err\": \"" + e.message + "\"}"
