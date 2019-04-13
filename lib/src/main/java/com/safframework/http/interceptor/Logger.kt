@@ -35,7 +35,7 @@ class Logger {
         /**
          * 支持超长日志的打印
          */
-        private fun printLog(tag:String,logString: String) {
+        private fun printLog(tag:String,logString: String,logLevel: LoggingInterceptor.LogLevel) {
 
             if (logString.length > 4000) {
 
@@ -44,13 +44,24 @@ class Logger {
                 while (i < logString.length) {
 
                     if (i + 4000 < logString.length)
-                        Log.i(tag, logString.substring(i, i + 4000))
+                        log(tag, logString.substring(i, i + 4000),logLevel)
                     else
-                        Log.i(tag, logString.substring(i, logString.length))
+                        log(tag, logString.substring(i, logString.length),logLevel)
                     i += 4000
                 }
             } else
-                Log.i(tag, logString);
+                log(tag, logString,logLevel);
+        }
+
+        private fun log(tag:String,msg:String,logLevel: LoggingInterceptor.LogLevel = LoggingInterceptor.LogLevel.INFO) {
+
+            when(logLevel) {
+
+                LoggingInterceptor.LogLevel.ERROR -> Log.e(tag,msg)
+                LoggingInterceptor.LogLevel.WARN -> Log.w(tag,msg)
+                LoggingInterceptor.LogLevel.INFO -> Log.i(tag,msg)
+                LoggingInterceptor.LogLevel.DEBUG -> Log.d(tag,msg)
+            }
         }
 
         @JvmStatic
@@ -58,6 +69,7 @@ class Logger {
 
             val tag = builder.getTag(true)
             val hideVerticalLine = builder.hideVerticalLineFlag
+            val logLevel = builder.logLevel
 
             val sb = StringBuilder()
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
@@ -81,19 +93,20 @@ class Logger {
 
                 if (header.isLineEmpty()) {
 
-                    sb.append(Logger.LINE_SEPARATOR)
+                    sb.append(LINE_SEPARATOR)
                 }
             }
 
             sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, sb.toString())
+            log(tag, sb.toString(),logLevel)
         }
 
         @JvmStatic
         fun printFileRequest(builder: LoggingInterceptor.Builder, request: Request) {
 
             val tag = builder.getTag(true)
+            val logLevel = builder.logLevel
 
             val sb = StringBuilder()
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
@@ -106,7 +119,7 @@ class Logger {
             sb.append(requestBody+logLines(binaryBodyString))
             sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, sb.toString())
+            log(tag, sb.toString(),logLevel)
         }
 
         @JvmStatic
@@ -115,6 +128,7 @@ class Logger {
 
             val tag = builder.getTag(false)
             val hideVerticalLine = builder.hideVerticalLineFlag
+            val logLevel = builder.logLevel
 
             val sb = StringBuilder()
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
@@ -132,7 +146,7 @@ class Logger {
 
             sb.append(BOTTOM_BORDER)
 
-            printLog(tag, sb.toString())
+            printLog(tag, sb.toString(),logLevel)
         }
 
         @JvmStatic
@@ -140,13 +154,14 @@ class Logger {
                               code: Int, headers: String, segments: List<String>) {
 
             val tag = builder.getTag(false)
+            val logLevel = builder.logLevel
 
             val sb = StringBuilder()
-            sb.append("  ").append(Logger.LINE_SEPARATOR).append(Logger.TOP_BORDER).append(Logger.LINE_SEPARATOR)
+            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
             sb.append(BOTTOM_BORDER)
 
-            Log.i(tag, sb.toString())
+            log(tag, sb.toString(),logLevel)
         }
 
         private fun getRequest(request: Request, hideVerticalLine:Boolean=false): String {

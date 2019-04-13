@@ -106,6 +106,12 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
                 || subtype.contains("plain")
                 || subtype.contains("html"))
 
+    enum class LogLevel {
+        ERROR,
+        WARN,
+        INFO,
+        DEBUG;
+    }
 
     class Builder {
 
@@ -115,6 +121,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         var requestFlag:Boolean = false
         var responseFlag:Boolean = false
         var hideVerticalLineFlag:Boolean = false
+        var logLevel:LogLevel = LogLevel.INFO
 
         private lateinit var requestTag: String
         private lateinit var responseTag: String
@@ -213,6 +220,17 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          */
         fun hideVerticalLine(): Builder {
             this.hideVerticalLineFlag = true
+            return this
+        }
+
+        /**
+         * Set logLevel
+         *
+         *
+         * @return Builder
+         */
+        fun logLevel(logLevel: LogLevel): Builder {
+            this.logLevel = logLevel
             return this
         }
 
