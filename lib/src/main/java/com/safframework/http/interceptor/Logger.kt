@@ -81,7 +81,7 @@ class Logger {
                 val requestBody = if (hideVerticalLine) {
                     " "+LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
                 } else {
-                    "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
+                    " "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
                 }
 
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
