@@ -284,16 +284,19 @@ class Logger {
                 buffer += LINE_SEPARATOR + "Content-Length: "+requestBody.contentLength()
             }
 
-            val contentTypeString = requestBody.contentType().toString()
-            if (contentTypeString.contains("application/x-www-form-urlencoded")) {
-                buffer += LINE_SEPARATOR
-                if(requestBody is FormBody){
-                    val size = requestBody.size()
-                    for (i in 0 until size) {
-                        buffer += requestBody.name(i) + "=" + requestBody.value(i) + "&"
-                    }
+            if (contentType!=null) {
 
-                    buffer = buffer.take(buffer.length - 1)
+                val contentTypeString = contentType.toString()
+                if (contentTypeString.contains("application/x-www-form-urlencoded")) {
+                    buffer += LINE_SEPARATOR
+                    if(requestBody is FormBody){
+                        val size = requestBody.size()
+                        for (i in 0 until size) {
+                            buffer += requestBody.name(i) + "=" + requestBody.value(i) + "&"
+                        }
+
+                        buffer = buffer.take(buffer.length - 1)
+                    }
                 }
             }
 
