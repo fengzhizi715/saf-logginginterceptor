@@ -16,14 +16,15 @@ class Logger {
 
     companion object {
 
-        private val JSON_INDENT = 3
-        private val MAX_LONG_SIZE = 120
-        private val N = "\n"
-        private val T = "\t"
+        private const val JSON_INDENT = 3
+        private const val MAX_STRING_LENGTH = 4000
+        private const val MAX_LONG_SIZE = 120
+        private const val N = "\n"
+        private const val T = "\t"
 
-        private val TOP_LEFT_CORNER = '╔'
-        private val BOTTOM_LEFT_CORNER = '╚'
-        private val DOUBLE_DIVIDER = "═════════════════════════════════════════════════"
+        private const val TOP_LEFT_CORNER = '╔'
+        private const val BOTTOM_LEFT_CORNER = '╚'
+        private const val DOUBLE_DIVIDER = "═════════════════════════════════════════════════"
         private val TOP_BORDER = TOP_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val BOTTOM_BORDER = BOTTOM_LEFT_CORNER + DOUBLE_DIVIDER + DOUBLE_DIVIDER
         private val LINE_SEPARATOR = System.getProperty("line.separator")
@@ -37,17 +38,17 @@ class Logger {
          */
         private fun printLog(tag:String,logString: String,logLevel: LoggingInterceptor.LogLevel) {
 
-            if (logString.length > 4000) {
+            if (logString.length > MAX_STRING_LENGTH) {
 
                 var i = 0
 
                 while (i < logString.length) {
 
-                    if (i + 4000 < logString.length)
-                        log(tag, logString.substring(i, i + 4000),logLevel)
+                    if (i + MAX_STRING_LENGTH < logString.length)
+                        log(tag, logString.substring(i, i + MAX_STRING_LENGTH),logLevel)
                     else
                         log(tag, logString.substring(i, logString.length),logLevel)
-                    i += 4000
+                    i += MAX_STRING_LENGTH
                 }
             } else
                 log(tag, logString,logLevel);
