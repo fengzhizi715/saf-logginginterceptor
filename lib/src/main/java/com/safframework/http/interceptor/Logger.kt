@@ -2,6 +2,7 @@ package com.safframework.http.interceptor
 
 import android.text.TextUtils
 import android.util.Log
+import okhttp3.FormBody
 import okhttp3.Request
 import okio.Buffer
 import org.json.JSONArray
@@ -113,7 +114,7 @@ class Logger {
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getRequest(request))
 
-            val requestBody = "║ "+LINE_SEPARATOR
+            val requestBody = " "+LINE_SEPARATOR
 
             val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
@@ -272,14 +273,28 @@ class Logger {
             if (requestBody == null) return ""
 
             var buffer:String?
-            if (requestBody.contentType()!=null) {
-                buffer = "Content-Type: "+requestBody.contentType().toString()
+            val contentType = requestBody.contentType()
+            if (contentType!=null) {
+                buffer = "Content-Type: "+ contentType.toString()
             } else {
                 buffer  = ""
             }
 
             if (requestBody.contentLength()>0) {
                 buffer += LINE_SEPARATOR + "Content-Length: "+requestBody.contentLength()
+            }
+
+            val contentTypeString = requestBody.contentType().toString()
+            if (contentTypeString.contains("application/x-www-form-urlencoded")) {
+                buffer += LINE_SEPARATOR
+                if(requestBody is FormBody){
+                    val size = requestBody.size()
+                    for (i in 0 until size) {
+                        buffer += requestBody.name(i) + "=" + requestBody.value(i) + "&"
+                    }
+
+                    buffer = buffer.take(buffer.length - 1)
+                }
             }
 
             return buffer
