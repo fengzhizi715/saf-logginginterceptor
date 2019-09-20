@@ -178,12 +178,12 @@ class Logger {
 
                 return " URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
                         if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "" +
-                                if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
+                                if (header.isLineEmpty()) "" else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
                 return "║ URL: " + request.url() + getDoubleSeparator() + "║ Method: @" + request.method() + getDoubleSeparator() +
                         if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
-                                if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                                if (header.isLineEmpty()) "" else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
