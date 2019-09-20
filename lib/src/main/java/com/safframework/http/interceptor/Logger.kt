@@ -93,7 +93,13 @@ class Logger {
 
                 if (header.isLineEmpty()) {
 
-                    sb.append(LINE_SEPARATOR)
+                    if (hideVerticalLine) {
+
+                        sb.append(LINE_SEPARATOR)
+                    } else {
+
+                        sb.append("║ ").append(LINE_SEPARATOR)
+                    }
                 }
             }
 
@@ -171,7 +177,7 @@ class Logger {
             if (hideVerticalLine) {
 
                 return " URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
-                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "" +
                                 if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
@@ -192,7 +198,7 @@ class Logger {
 
                 return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
                         code + getDoubleSeparator(hideVerticalLine) +
-                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "" +
                                 if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
