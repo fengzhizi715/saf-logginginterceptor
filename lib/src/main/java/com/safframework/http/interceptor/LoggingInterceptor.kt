@@ -1,6 +1,9 @@
 package com.safframework.http.interceptor
 
-import okhttp3.*
+import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.MediaType
+import okhttp3.Response
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
@@ -11,7 +14,7 @@ import java.util.concurrent.TimeUnit
 class LoggingInterceptor private constructor(private val builder: LoggingInterceptor.Builder) : Interceptor {
 
     private val isDebug: Boolean
-    private val charset:Charset
+    private val charset: Charset
 
     init {
         this.isDebug = builder.isDebug
@@ -100,11 +103,10 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         return response
     }
 
-    private fun subtypeIsNotFile(subtype:String?):Boolean
-            = subtype != null && (subtype.contains("json")
-                || subtype.contains("xml")
-                || subtype.contains("plain")
-                || subtype.contains("html"))
+    private fun subtypeIsNotFile(subtype: String?): Boolean = subtype != null && (subtype.contains("json")
+            || subtype.contains("xml")
+            || subtype.contains("plain")
+            || subtype.contains("html"))
 
     enum class LogLevel {
         ERROR,
@@ -118,10 +120,11 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         var TAG = "SAF_Logging_Interceptor"
 
         var isDebug: Boolean = false
-        var requestFlag:Boolean = false
-        var responseFlag:Boolean = false
-        var hideVerticalLineFlag:Boolean = false
-        var logLevel:LogLevel = LogLevel.INFO
+        var enableThreadName: Boolean = true
+        var requestFlag: Boolean = false
+        var responseFlag: Boolean = false
+        var hideVerticalLineFlag: Boolean = false
+        var logLevel: LogLevel = LogLevel.INFO
 
         private lateinit var requestTag: String
         private lateinit var responseTag: String
@@ -241,6 +244,16 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          */
         fun loggable(isDebug: Boolean): Builder {
             this.isDebug = isDebug
+            return this
+        }
+
+        /**
+         * @param enable print thread name, default = true
+         *
+         * @return Builder
+         */
+        fun printThreadName(enable: Boolean): Builder {
+            this.enableThreadName = enable
             return this
         }
 

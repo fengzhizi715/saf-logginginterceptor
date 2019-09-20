@@ -32,12 +32,12 @@ class Logger {
 
         private fun String.isLineEmpty() = isEmpty() || N == this || T == this || this.trim { it <= ' ' }.isEmpty()
 
-        private fun getDoubleSeparator(hideVerticalLine:Boolean=false):String = if (hideVerticalLine) LINE_SEPARATOR + " " + LINE_SEPARATOR else LINE_SEPARATOR + "║ " + LINE_SEPARATOR
+        private fun getDoubleSeparator(hideVerticalLine: Boolean = false): String = if (hideVerticalLine) LINE_SEPARATOR + " " + LINE_SEPARATOR else LINE_SEPARATOR + "║ " + LINE_SEPARATOR
 
         /**
          * 支持超长日志的打印
          */
-        private fun printLog(tag:String,logString: String,logLevel: LoggingInterceptor.LogLevel) {
+        private fun printLog(tag: String, logString: String, logLevel: LoggingInterceptor.LogLevel) {
 
             if (logString.length > MAX_STRING_LENGTH) {
 
@@ -46,23 +46,21 @@ class Logger {
                 while (i < logString.length) {
 
                     if (i + MAX_STRING_LENGTH < logString.length)
-                        log(tag, logString.substring(i, i + MAX_STRING_LENGTH),logLevel)
+                        log(tag, logString.substring(i, i + MAX_STRING_LENGTH), logLevel)
                     else
-                        log(tag, logString.substring(i, logString.length),logLevel)
+                        log(tag, logString.substring(i, logString.length), logLevel)
                     i += MAX_STRING_LENGTH
                 }
             } else
-                log(tag, logString,logLevel);
+                log(tag, logString, logLevel);
         }
 
-        private fun log(tag:String,msg:String,logLevel: LoggingInterceptor.LogLevel = LoggingInterceptor.LogLevel.INFO) {
-
-            when(logLevel) {
-
-                LoggingInterceptor.LogLevel.ERROR -> Log.e(tag,msg)
-                LoggingInterceptor.LogLevel.WARN -> Log.w(tag,msg)
-                LoggingInterceptor.LogLevel.INFO -> Log.i(tag,msg)
-                LoggingInterceptor.LogLevel.DEBUG -> Log.d(tag,msg)
+        private fun log(tag: String, msg: String, logLevel: LoggingInterceptor.LogLevel = LoggingInterceptor.LogLevel.INFO) {
+            when (logLevel) {
+                LoggingInterceptor.LogLevel.ERROR -> Log.e(tag, msg)
+                LoggingInterceptor.LogLevel.WARN -> Log.w(tag, msg)
+                LoggingInterceptor.LogLevel.INFO -> Log.i(tag, msg)
+                LoggingInterceptor.LogLevel.DEBUG -> Log.d(tag, msg)
             }
         }
 
@@ -75,19 +73,19 @@ class Logger {
 
             val sb = StringBuilder()
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getRequest(request,hideVerticalLine))
+            sb.append(getRequest(request, hideVerticalLine, builder.enableThreadName))
 
             if (request.method() != "GET") { // get请求不需要body
 
                 val requestBody = if (hideVerticalLine) {
-                    " "+LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
+                    " " + LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
                 } else {
-                    " "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
+                    " " + LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
                 }
 
                 val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-                sb.append(requestBody+logLines(bodyString,hideVerticalLine))
+                sb.append(requestBody + logLines(bodyString, hideVerticalLine))
 
             } else {
 
@@ -101,7 +99,7 @@ class Logger {
 
             sb.append(BOTTOM_BORDER)
 
-            log(tag, sb.toString(),logLevel)
+            log(tag, sb.toString(), logLevel)
         }
 
         @JvmStatic
@@ -114,14 +112,14 @@ class Logger {
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
             sb.append(getRequest(request))
 
-            val requestBody = " "+LINE_SEPARATOR
+            val requestBody = " " + LINE_SEPARATOR
 
             val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            sb.append(requestBody+logLines(binaryBodyString))
+            sb.append(requestBody + logLines(binaryBodyString))
             sb.append(BOTTOM_BORDER)
 
-            log(tag, sb.toString(),logLevel)
+            log(tag, sb.toString(), logLevel)
         }
 
         @JvmStatic
@@ -134,21 +132,21 @@ class Logger {
 
             val sb = StringBuilder()
             sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments,hideVerticalLine))
+            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments, hideVerticalLine, builder.enableThreadName))
 
             val responseBody = if (hideVerticalLine) {
-                " "+LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
+                " " + LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
             } else {
-                "║ "+LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
+                "║ " + LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
             }
 
             val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            sb.append(responseBody+logLines(bodyString,hideVerticalLine))
+            sb.append(responseBody + logLines(bodyString, hideVerticalLine))
 
             sb.append(BOTTOM_BORDER)
 
-            printLog(tag, sb.toString(),logLevel)
+            printLog(tag, sb.toString(), logLevel)
         }
 
         @JvmStatic
@@ -163,43 +161,47 @@ class Logger {
             sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
             sb.append(BOTTOM_BORDER)
 
-            log(tag, sb.toString(),logLevel)
+            log(tag, sb.toString(), logLevel)
         }
 
-        private fun getRequest(request: Request, hideVerticalLine:Boolean=false): String {
+        private fun getRequest(request: Request, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
 
             val header = request.headers().toString()
 
             if (hideVerticalLine) {
 
                 return " URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
-                        if (header.isLineEmpty())  " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                                if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
                 return "║ URL: " + request.url() + getDoubleSeparator() + "║ Method: @" + request.method() + getDoubleSeparator() +
-                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                        if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                                if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
         private fun getResponse(header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
-                                segments: List<String>, hideVerticalLine:Boolean=false): String {
+                                segments: List<String>, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
 
-            var segmentString:String?
+            var segmentString: String?
 
             if (hideVerticalLine) {
 
                 segmentString = " " + slashSegments(segments)
 
-                return  (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
+                return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
                         code + getDoubleSeparator(hideVerticalLine) +
-                        if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header,hideVerticalLine)
+                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                                if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
                 segmentString = "║ " + slashSegments(segments)
 
                 return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
                         code + getDoubleSeparator() +
-                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                        if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
+                                if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
@@ -211,11 +213,11 @@ class Logger {
             return segmentString.toString()
         }
 
-        private fun dotHeaders(header: String, hideVerticalLine:Boolean=false): String {
+        private fun dotHeaders(header: String, hideVerticalLine: Boolean = false): String {
             val headers = header.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val builder = StringBuilder()
 
-            if (headers!=null && headers.isNotEmpty()) {
+            if (headers != null && headers.isNotEmpty()) {
                 for (item in headers) {
 
                     if (hideVerticalLine) {
@@ -232,7 +234,7 @@ class Logger {
             return builder.toString()
         }
 
-        private fun logLines(lines: Array<String>,hideVerticalLine:Boolean=false): String {
+        private fun logLines(lines: Array<String>, hideVerticalLine: Boolean = false): String {
             val sb = StringBuilder()
             for (line in lines) {
                 val lineLength = line.length
@@ -272,24 +274,24 @@ class Logger {
             val requestBody = copy.body()
             if (requestBody == null) return ""
 
-            var buffer:String?
+            var buffer: String?
             val contentType = requestBody.contentType()
-            if (contentType!=null) {
-                buffer = "Content-Type: "+ contentType.toString()
+            if (contentType != null) {
+                buffer = "Content-Type: " + contentType.toString()
             } else {
-                buffer  = ""
+                buffer = ""
             }
 
-            if (requestBody.contentLength()>0) {
-                buffer += LINE_SEPARATOR + "Content-Length: "+requestBody.contentLength()
+            if (requestBody.contentLength() > 0) {
+                buffer += LINE_SEPARATOR + "Content-Length: " + requestBody.contentLength()
             }
 
-            if (contentType!=null) {
+            if (contentType != null) {
 
                 val contentTypeString = contentType.toString()
                 if (contentTypeString.contains("application/x-www-form-urlencoded")) {
                     buffer += LINE_SEPARATOR
-                    if(requestBody is FormBody){
+                    if (requestBody is FormBody) {
                         val size = requestBody.size()
                         for (i in 0 until size) {
                             buffer += requestBody.name(i) + "=" + requestBody.value(i) + "&"
