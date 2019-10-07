@@ -26,15 +26,15 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         var request = chain.request()
 
-        if (builder.headers.size() > 0) {
-            val headers = request.headers()
+        if (builder.headers.size > 0) {
+            val headers = request.headers
             val names = headers.names()
             val iterator = names.iterator()
             val requestBuilder = request.newBuilder()
             requestBuilder.headers(builder.headers)
             while (iterator.hasNext()) {
                 val name = iterator.next()
-                requestBuilder.addHeader(name, headers.get(name))
+                headers[name]?.let { requestBuilder.addHeader(name, it) }
             }
             request = requestBuilder.build()
         }
@@ -43,7 +43,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
             return chain.proceed(request)
         }
 
-        val requestBody = request.body()
+        val requestBody = request.body
 
         var rContentType: MediaType? = null
         if (requestBody != null) {
@@ -52,15 +52,13 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         var rSubtype: String? = null
         if (rContentType != null) {
-            rSubtype = rContentType.subtype()
+            rSubtype = rContentType.subtype
         }
 
         if (builder.requestFlag) {
-            if (request.method() == "GET") {
-
+            if (request.method == "GET") {
                 Logger.printJsonRequest(builder, request)
             } else {
-
                 if (subtypeIsNotFile(rSubtype)) {
                     Logger.printJsonRequest(builder, request)
                 } else {
@@ -73,28 +71,30 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         val response = chain.proceed(request)
 
         if (builder.responseFlag) {
-            val segmentList = request.url().encodedPathSegments()
+            val segmentList = request.url.encodedPathSegments
             val chainMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - st)
-            val header = response.headers().toString()
-            val code = response.code()
+            val header = response.headers.toString()
+            val code = response.code
             val isSuccessful = response.isSuccessful
-            val responseBody = response.body()
-            val contentType = responseBody!!.contentType()
+            val responseBody = response.body
+            val contentType = responseBody?.contentType()
 
             var subtype: String? = null
 
             if (contentType != null) {
-                subtype = contentType.subtype()
+                subtype = contentType.subtype
             }
 
             if (subtypeIsNotFile(subtype)) {
 
-                val source = responseBody.source()
-                source.request(Long.MAX_VALUE)
-                val buffer = source.buffer()
+                responseBody?.let {
+                    val source = it.source()
+                    source.request(Long.MAX_VALUE)
+                    val buffer = source.buffer
 
-                val bodyString = Logger.getJsonString(buffer.clone().readString(charset))
-                Logger.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString, segmentList)
+                    val bodyString = Logger.getJsonString(buffer.clone().readString(charset))
+                    Logger.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString, segmentList)
+                }
             } else {
                 Logger.printFileResponse(builder, chainMs, isSuccessful, code, header, segmentList)
             }
@@ -103,7 +103,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         return response
     }
 
-    private fun subtypeIsNotFile(subtype: String?): Boolean = subtype != null && (subtype.contains("json")
+    private fun subtypeIsNotFile(subtype: String?)  = subtype != null && (subtype.contains("json")
             || subtype.contains("xml")
             || subtype.contains("plain")
             || subtype.contains("html"))
@@ -257,9 +257,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
             return this
         }
 
-        fun build(): LoggingInterceptor {
-            return LoggingInterceptor(this)
-        }
+        fun build() =  LoggingInterceptor(this)
     }
 
 }

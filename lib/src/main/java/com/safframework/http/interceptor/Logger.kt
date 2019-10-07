@@ -32,7 +32,7 @@ class Logger {
 
         private fun String.isLineEmpty() = isEmpty() || N == this || T == this || this.trim { it <= ' ' }.isEmpty()
 
-        private fun getDoubleSeparator(hideVerticalLine: Boolean = false): String = if (hideVerticalLine) LINE_SEPARATOR + " " + LINE_SEPARATOR else LINE_SEPARATOR + "║ " + LINE_SEPARATOR
+        private fun getDoubleSeparator(hideVerticalLine: Boolean = false) = if (hideVerticalLine) "$LINE_SEPARATOR  $LINE_SEPARATOR" else "$LINE_SEPARATOR║ $LINE_SEPARATOR"
 
         /**
          * 支持超长日志的打印
@@ -58,8 +58,8 @@ class Logger {
         private fun log(tag: String, msg: String, logLevel: LoggingInterceptor.LogLevel = LoggingInterceptor.LogLevel.INFO) {
             when (logLevel) {
                 LoggingInterceptor.LogLevel.ERROR -> Log.e(tag, msg)
-                LoggingInterceptor.LogLevel.WARN -> Log.w(tag, msg)
-                LoggingInterceptor.LogLevel.INFO -> Log.i(tag, msg)
+                LoggingInterceptor.LogLevel.WARN  -> Log.w(tag, msg)
+                LoggingInterceptor.LogLevel.INFO  -> Log.i(tag, msg)
                 LoggingInterceptor.LogLevel.DEBUG -> Log.d(tag, msg)
             }
         }
@@ -70,42 +70,43 @@ class Logger {
             val tag = builder.getTag(true)
             val hideVerticalLine = builder.hideVerticalLineFlag
             val logLevel = builder.logLevel
+            val requestBody = request.body
 
-            val sb = StringBuilder()
-            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getRequest(request, hideVerticalLine, builder.enableThreadName))
+            val requestString = StringBuilder().apply {
 
-            if (request.method() != "GET") { // get请求不需要body
+                append("  ")
+                        .append(LINE_SEPARATOR)
+                        .append(TOP_BORDER)
+                        .append(LINE_SEPARATOR)
+                        .append(getRequest(request, hideVerticalLine, builder.enableThreadName))
 
-                val requestBody = if (hideVerticalLine) {
-                    " " + LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
-                } else {
-                    " " + LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
-                }
+                val header = request.headers.toString()
 
-                val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-
-                sb.append(requestBody + logLines(bodyString, hideVerticalLine))
-
-            } else {
-
-                val header = request.headers().toString()
-
-                if (header.isLineEmpty()) {
-
+                if (!header.isLineEmpty()) {
                     if (hideVerticalLine) {
-
-                        sb.append(LINE_SEPARATOR)
+                        append(" Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine))
                     } else {
-
-                        sb.append("║ ").append(LINE_SEPARATOR)
+                        append("║ Headers:" + LINE_SEPARATOR + dotHeaders(header))
                     }
                 }
-            }
 
-            sb.append(BOTTOM_BORDER)
+                if (requestBody!=null) {
 
-            log(tag, sb.toString(), logLevel)
+                    val requestBodyString = if (hideVerticalLine) {
+                        " $LINE_SEPARATOR Body:$LINE_SEPARATOR"
+                    } else {
+                        "║ $LINE_SEPARATOR║ Body:$LINE_SEPARATOR"
+                    }
+
+                    val bodyString = bodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+                    append(requestBodyString + logLines(bodyString, hideVerticalLine))
+                }
+
+                append(BOTTOM_BORDER)
+            }.toString()
+
+            log(tag, requestString, logLevel)
         }
 
         @JvmStatic
@@ -136,23 +137,24 @@ class Logger {
             val hideVerticalLine = builder.hideVerticalLineFlag
             val logLevel = builder.logLevel
 
-            val sb = StringBuilder()
-            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments, hideVerticalLine, builder.enableThreadName))
+            val responseString = StringBuilder().apply {
+                append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
+                append(getResponse(headers, chainMs, code, isSuccessful, segments, hideVerticalLine, builder.enableThreadName))
 
-            val responseBody = if (hideVerticalLine) {
-                " " + LINE_SEPARATOR + " Body:" + LINE_SEPARATOR
-            } else {
-                "║ " + LINE_SEPARATOR + "║ Body:" + LINE_SEPARATOR
-            }
+                val responseBody = if (hideVerticalLine) {
+                    " $LINE_SEPARATOR Body:$LINE_SEPARATOR"
+                } else {
+                    "║ $LINE_SEPARATOR║ Body:$LINE_SEPARATOR"
+                }
 
-            val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val bodyString = getJsonString(bodyString).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            sb.append(responseBody + logLines(bodyString, hideVerticalLine))
+                append(responseBody + logLines(bodyString, hideVerticalLine))
 
-            sb.append(BOTTOM_BORDER)
+                append(BOTTOM_BORDER)
+            }.toString()
 
-            printLog(tag, sb.toString(), logLevel)
+            printLog(tag, responseString, logLevel)
         }
 
         @JvmStatic
@@ -172,18 +174,14 @@ class Logger {
 
         private fun getRequest(request: Request, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
 
-            val header = request.headers().toString()
-
             if (hideVerticalLine) {
 
-                return " URL: " + request.url() + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method() + getDoubleSeparator(hideVerticalLine) +
-                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "" +
-                                if (header.isLineEmpty()) "" else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
+                return " URL: " + request.url + getDoubleSeparator(hideVerticalLine) + " Method: @" + request.method + getDoubleSeparator(hideVerticalLine) +
+                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else ""
             } else {
 
-                return "║ URL: " + request.url() + getDoubleSeparator() + "║ Method: @" + request.method() + getDoubleSeparator() +
-                        if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
-                                if (header.isLineEmpty()) "" else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                return "║ URL: " + request.url + getDoubleSeparator() + "║ Method: @" + request.method + getDoubleSeparator() +
+                        if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else ""
             }
         }
 
@@ -198,50 +196,45 @@ class Logger {
 
                 return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
                         code + getDoubleSeparator(hideVerticalLine) +
-                        if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "" +
-                                if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
+                        (if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "") +
+                        if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
                 segmentString = "║ " + slashSegments(segments)
 
                 return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
                         code + getDoubleSeparator() +
-                        if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "" +
-                                if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
+                        (if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "") +
+                        if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
 
-        private fun slashSegments(segments: List<String>): String {
-            val segmentString = StringBuilder()
+        private fun slashSegments(segments: List<String>) = StringBuilder().apply {
             for (segment in segments) {
-                segmentString.append("/").append(segment)
+                append("/").append(segment)
             }
-            return segmentString.toString()
-        }
+        }.toString()
 
         private fun dotHeaders(header: String, hideVerticalLine: Boolean = false): String {
             val headers = header.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val builder = StringBuilder()
 
-            if (headers != null && headers.isNotEmpty()) {
-                for (item in headers) {
-
-                    if (hideVerticalLine) {
-                        builder.append(" - ").append(item).append("\n")
-                    } else {
-                        builder.append("║ - ").append(item).append("\n")
+            return StringBuilder().apply {
+                if (headers != null && headers.isNotEmpty()) {
+                    for (item in headers) {
+                        if (hideVerticalLine) {
+                            append(" - ").append(item).append("\n")
+                        } else {
+                            append("║ - ").append(item).append("\n")
+                        }
                     }
+                } else {
+                    append(LINE_SEPARATOR)
                 }
-            } else {
-
-                builder.append(LINE_SEPARATOR)
-            }
-
-            return builder.toString()
+            }.toString()
         }
 
-        private fun logLines(lines: Array<String>, hideVerticalLine: Boolean = false): String {
-            val sb = StringBuilder()
+        private fun logLines(lines: Array<String>, hideVerticalLine: Boolean = false) = StringBuilder().apply {
+
             for (line in lines) {
                 val lineLength = line.length
                 for (i in 0..lineLength / MAX_LONG_SIZE) {
@@ -250,24 +243,21 @@ class Logger {
                     end = if (end > line.length) line.length else end
 
                     if (hideVerticalLine) {
-                        sb.append(" " + line.substring(start, end)).append(LINE_SEPARATOR)
+                        append(" " + line.substring(start, end)).append(LINE_SEPARATOR)
                     } else {
-                        sb.append("║ " + line.substring(start, end)).append(LINE_SEPARATOR)
+                        append("║ " + line.substring(start, end)).append(LINE_SEPARATOR)
                     }
-
                 }
             }
-
-            return sb.toString()
-        }
+        }.toString()
 
         private fun bodyToString(request: Request): String {
             try {
                 val copy = request.newBuilder().build()
                 val buffer = Buffer()
-                if (copy.body() == null) return ""
+                if (copy.body == null) return ""
 
-                copy.body()?.writeTo(buffer)
+                copy.body?.writeTo(buffer)
                 return getJsonString(buffer.readUtf8())
             } catch (e: IOException) {
                 return "{\"err\": \"" + e.message + "\"}"
@@ -277,8 +267,7 @@ class Logger {
         private fun binaryBodyToString(request: Request): String {
 
             val copy = request.newBuilder().build()
-            val requestBody = copy.body()
-            if (requestBody == null) return ""
+            val requestBody = copy.body?:return ""
 
             var buffer: String?
             val contentType = requestBody.contentType()
@@ -298,7 +287,7 @@ class Logger {
                 if (contentTypeString.contains("application/x-www-form-urlencoded")) {
                     buffer += LINE_SEPARATOR
                     if (requestBody is FormBody) {
-                        val size = requestBody.size()
+                        val size = requestBody.size
                         for (i in 0 until size) {
                             buffer += requestBody.name(i) + "=" + requestBody.value(i) + "&"
                         }
