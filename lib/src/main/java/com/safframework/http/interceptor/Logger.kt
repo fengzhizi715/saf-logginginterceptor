@@ -175,12 +175,14 @@ class Logger {
             val tag = builder.getTag(false)
             val logLevel = builder.logLevel
 
-            val sb = StringBuilder()
-            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getResponse(headers, chainMs, code, isSuccessful, segments))
-            sb.append(BOTTOM_BORDER)
+            val responseString = StringBuilder().apply {
 
-            log(tag, sb.toString(), logLevel)
+                append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
+                append(getResponse(headers, chainMs, code, isSuccessful, segments))
+                append(BOTTOM_BORDER)
+            }.toString()
+
+            log(tag, responseString, logLevel)
         }
 
         private fun getRequest(request: Request, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
