@@ -14,8 +14,7 @@
 * 支持日志级别
 * 支持显示当前的线程名称
 
- 更完善的 Android 日志框架可以参考本人的另一个日志库 [L](https://github.com/fengzhizi715/SAF-Kotlin-log)。
- 
+ > 更完善的 Android 日志框架可以参考本人的另一个日志库 [L](https://github.com/fengzhizi715/SAF-Kotlin-log)  (https://github.com/fengzhizi715/SAF-Kotlin-log) 
  它提供丰富的日志功能，它的 saf-log-okhttp 模块提供类似于该库的功能。
 
 # 二. 下载安装
