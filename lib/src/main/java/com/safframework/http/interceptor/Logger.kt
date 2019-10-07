@@ -113,20 +113,31 @@ class Logger {
         fun printFileRequest(builder: LoggingInterceptor.Builder, request: Request) {
 
             val tag = builder.getTag(true)
+            val hideVerticalLine = builder.hideVerticalLineFlag
             val logLevel = builder.logLevel
 
-            val sb = StringBuilder()
-            sb.append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-            sb.append(getRequest(request))
+            val requestString = StringBuilder().apply {
 
-            val requestBody = " " + LINE_SEPARATOR
+                append("  ")
+                        .append(LINE_SEPARATOR)
+                        .append(TOP_BORDER)
+                        .append(LINE_SEPARATOR)
+                        .append(getRequest(request))
 
-            val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val requestBodyString = if (hideVerticalLine) {
+                    " $LINE_SEPARATOR Body:$LINE_SEPARATOR"
+                } else {
+                    "║ $LINE_SEPARATOR║ Body:$LINE_SEPARATOR"
+                }
 
-            sb.append(requestBody + logLines(binaryBodyString))
-            sb.append(BOTTOM_BORDER)
+                val binaryBodyString = binaryBodyToString(request).split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            log(tag, sb.toString(), logLevel)
+                append(requestBodyString + logLines(binaryBodyString))
+                append(BOTTOM_BORDER)
+
+            }.toString()
+
+            log(tag, requestString, logLevel)
         }
 
         @JvmStatic
