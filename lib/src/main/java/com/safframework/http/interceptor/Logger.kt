@@ -327,6 +327,7 @@ class Logger {
                 } else {
                     message = msg
                 }
+                message = message.replace("\\/", "/")
             } catch (e: JSONException) {
                 message = msg
             }
