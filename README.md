@@ -86,9 +86,6 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.4.9'
 
 ![](images/隐藏边框的效果.png)
 
-# TODO List：
-
-* okhttp 版本升级
 
 联系方式
 ===
