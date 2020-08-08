@@ -11,8 +11,8 @@ ext {
 
     libraries = [
             supportVersion            : "28.0.0",
-            appcompat                 : "1.1.0",
-            okhttp3                   : "4.4.0"
+            appcompat                 : "1.2.0",
+            okhttp3                   : "4.8.0"
     ]
 }
 
