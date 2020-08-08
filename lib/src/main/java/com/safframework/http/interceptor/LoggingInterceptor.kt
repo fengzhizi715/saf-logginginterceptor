@@ -71,7 +71,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         val response = chain.proceed(request)
 
         if (builder.responseFlag) {
-            val segmentList = request.url.encodedPathSegments
+            val requestUrl = request.url
             val chainMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - st)
             val header = response.headers.toString()
             val code = response.code
@@ -93,10 +93,10 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
                     val buffer = source.buffer
 
                     val bodyString = Logger.getJsonString(buffer.clone().readString(charset))
-                    Logger.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString, segmentList)
+                    Logger.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString, requestUrl)
                 }
             } else {
-                Logger.printFileResponse(builder, chainMs, isSuccessful, code, header, segmentList)
+                Logger.printFileResponse(builder, chainMs, isSuccessful, code, header, requestUrl)
             }
         }
 
@@ -147,9 +147,7 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         /**
          * @param name  Filed
-         *
          * @param value Value
-         *
          * @return Builder
          * * Add a field with the specified value
          */
@@ -160,8 +158,8 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         /**
          * Set request and response each log tag
-         * @param tag general log tag
          *
+         * @param tag general log tag
          * @return Builder
          */
         fun tag(tag: String): Builder {
@@ -173,7 +171,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          * Set request log tag
          *
          * @param tag request log tag
-         *
          * @return Builder
          */
         fun requestTag(tag: String): Builder {
@@ -185,7 +182,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
          * Set response log tag
          *
          * @param tag response log tag
-         *
          * @return Builder
          */
         fun responseTag(tag: String): Builder {
@@ -195,7 +191,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         /**
          * Set request log flag
-         *
          *
          * @return Builder
          */
@@ -207,7 +202,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         /**
          * Set response log flag
          *
-         *
          * @return Builder
          */
         fun response(): Builder {
@@ -218,7 +212,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
         /**
          * Set hide vertical line flag
          *
-         *
          * @return Builder
          */
         fun hideVerticalLine(): Builder {
@@ -228,7 +221,6 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         /**
          * Set logLevel
-         *
          *
          * @return Builder
          */
@@ -259,5 +251,4 @@ class LoggingInterceptor private constructor(private val builder: LoggingInterce
 
         fun build() =  LoggingInterceptor(this)
     }
-
 }

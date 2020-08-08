@@ -3,6 +3,7 @@ package com.safframework.http.interceptor
 import android.text.TextUtils
 import android.util.Log
 import okhttp3.FormBody
+import okhttp3.HttpUrl
 import okhttp3.Request
 import okio.Buffer
 import org.json.JSONArray
@@ -142,7 +143,7 @@ class Logger {
 
         @JvmStatic
         fun printJsonResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
-                              code: Int, headers: String, bodyString: String, segments: List<String>) {
+                              code: Int, headers: String, bodyString: String, requestUrl: HttpUrl) {
 
             val tag = builder.getTag(false)
             val hideVerticalLine = builder.hideVerticalLineFlag
@@ -150,7 +151,7 @@ class Logger {
 
             val responseString = StringBuilder().apply {
                 append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-                append(getResponse(headers, chainMs, code, isSuccessful, segments, hideVerticalLine, builder.enableThreadName))
+                append(getResponse(headers, chainMs, code, isSuccessful, requestUrl, hideVerticalLine, builder.enableThreadName))
 
                 val responseBody = if (hideVerticalLine) {
                     " $LINE_SEPARATOR Body:$LINE_SEPARATOR"
@@ -170,7 +171,7 @@ class Logger {
 
         @JvmStatic
         fun printFileResponse(builder: LoggingInterceptor.Builder, chainMs: Long, isSuccessful: Boolean,
-                              code: Int, headers: String, segments: List<String>) {
+                              code: Int, headers: String, requestUrl: HttpUrl) {
 
             val tag = builder.getTag(false)
             val logLevel = builder.logLevel
@@ -178,7 +179,7 @@ class Logger {
             val responseString = StringBuilder().apply {
 
                 append("  ").append(LINE_SEPARATOR).append(TOP_BORDER).append(LINE_SEPARATOR)
-                append(getResponse(headers, chainMs, code, isSuccessful, segments))
+                append(getResponse(headers, chainMs, code, isSuccessful, requestUrl))
                 append(BOTTOM_BORDER)
             }.toString()
 
@@ -199,34 +200,22 @@ class Logger {
         }
 
         private fun getResponse(header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
-                                segments: List<String>, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
-
-            var segmentString: String?
+                                requestUrl: HttpUrl, hideVerticalLine: Boolean = false, enableThreadName: Boolean = true): String {
 
             if (hideVerticalLine) {
 
-                segmentString = " " + slashSegments(segments)
-
-                return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
+                return " URL: " + requestUrl + getDoubleSeparator(hideVerticalLine) + " is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator(hideVerticalLine) + " Status Code: " +
                         code + getDoubleSeparator(hideVerticalLine) +
                         (if (enableThreadName) " Thread: " + Thread.currentThread().name + getDoubleSeparator(hideVerticalLine) else "") +
                         if (header.isLineEmpty()) " " else " Headers:" + LINE_SEPARATOR + dotHeaders(header, hideVerticalLine)
             } else {
 
-                segmentString = "║ " + slashSegments(segments)
-
-                return (if (!TextUtils.isEmpty(segmentString)) segmentString + " - " else "") + "is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
+                return "║ URL: " + requestUrl + getDoubleSeparator() + " is success : " + isSuccessful + " - " + "Received in: " + tookMs + "ms" + getDoubleSeparator() + "║ Status Code: " +
                         code + getDoubleSeparator() +
                         (if (enableThreadName) "║ Thread: " + Thread.currentThread().name + getDoubleSeparator() else "") +
                         if (header.isLineEmpty()) "║ " else "║ Headers:" + LINE_SEPARATOR + dotHeaders(header)
             }
         }
-
-        private fun slashSegments(segments: List<String>) = StringBuilder().apply {
-            for (segment in segments) {
-                append("/").append(segment)
-            }
-        }.toString()
 
         private fun dotHeaders(header: String, hideVerticalLine: Boolean = false): String {
             val headers = header.split(LINE_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
