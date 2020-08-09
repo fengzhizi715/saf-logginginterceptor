@@ -87,6 +87,10 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.4.9'
 ![](images/隐藏边框的效果.png)
 
 
+# TODO List
+
+* 梳理代码，看看能否改造成一个不依赖 Android 的库
+
 联系方式
 ===
 
