@@ -15,8 +15,8 @@ import cn.netdiscovery.http.interceptor.log.LogProxy
 
 /**
  * 在使用日志拦截器之前
- * 必须要实现 LogProxy ，否则无法打印网络请求的 request 、response
- * 所以，需要先调用这个方法
+ * 必须要先实现 LogProxy ，否则无法打印网络请求的 request 、response
+ * 所以，先调用这个方法
  */
 fun init() {
 
