@@ -12,7 +12,7 @@
 * 支持格式化时去掉竖线边框显示日志。方便将网络请求复制到Postman之类的工具，方便将请求结果复制给服务端的同学。
 * 支持日志级别
 * 支持显示当前的线程名称
-* 底层使用 https://github.com/fengzhizi715/okhttp-logging-interceptor 
+* 底层 https://github.com/fengzhizi715/okhttp-logging-interceptor 作为统一的日志拦截器
 
  > 更完善的 Android 日志框架可以参考本人的另一个日志库 [L](https://github.com/fengzhizi715/SAF-Kotlin-log)  (https://github.com/fengzhizi715/SAF-Kotlin-log) 
  它提供丰富的日志功能，它的 saf-log-okhttp 模块提供类似于该库的功能。
@@ -30,6 +30,8 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.5.0'
 ## 3.1 在Java中使用
 
 ```java
+           init();
+
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.writeTimeout(30 * 1000, TimeUnit.MILLISECONDS);
             builder.readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
@@ -51,6 +53,8 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.5.0'
 ## 3.2 在Kotlin中使用
 
 ```kotlin
+        init();
+        
         val builder = OkHttpClient.Builder()
         builder.writeTimeout((30 * 1000).toLong(), TimeUnit.MILLISECONDS)
         builder.readTimeout((20 * 1000).toLong(), TimeUnit.MILLISECONDS)
