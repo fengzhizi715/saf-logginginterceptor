@@ -12,7 +12,9 @@
 * 支持格式化时去掉竖线边框显示日志。方便将网络请求复制到Postman之类的工具，方便将请求结果复制给服务端的同学。
 * 支持日志级别
 * 支持显示当前的线程名称
+* 支持排除一些接口的日志显示
 * 底层使用 https://github.com/fengzhizi715/okhttp-logging-interceptor 作为统一的日志拦截器
+
 
  > 更完善的 Android 日志框架可以参考本人的另一个日志库 [L](https://github.com/fengzhizi715/SAF-Kotlin-log)  (https://github.com/fengzhizi715/SAF-Kotlin-log) 
  它提供丰富的日志功能，它的 saf-log-okhttp 模块提供类似于该库的功能。
@@ -21,7 +23,7 @@
   Gradle:
 
 ```groovy
-implementation 'com.safframework.log:saf-logginginterceptor:1.5.1'
+implementation 'com.safframework.log:saf-logginginterceptor:1.5.2'
 ```  
 
 # 三. 使用方法
