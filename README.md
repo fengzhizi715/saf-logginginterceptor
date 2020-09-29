@@ -29,7 +29,7 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
 # 三. 使用方法
 它是用于记录OKHttp网络请求的日志的拦截器，纯 Kotlin 编写
 
-## 3.1 在Java中使用
+## 3.1 在 Java 中使用
 
 ```java
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -43,7 +43,7 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
             builder.addInterceptor(loggingInterceptor);
 ```
 
-## 3.2 在Kotlin中使用
+## 3.2 在 Kotlin 中使用
 
 ```kotlin    
         val builder = OkHttpClient.Builder()
@@ -56,6 +56,10 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
        //设置拦截器
        builder.addInterceptor(loggingInterceptor)
 ```
+
+## 3.3 定制 LoggingInterceptor
+
+可以参考 AndroidLoggingInterceptor 的 build() 以及 https://github.com/fengzhizi715/okhttp-logging-interceptor 进行定制 LoggingInterceptor
 
 # 四. 效果显示
 
