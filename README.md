@@ -29,26 +29,15 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
 # 三. 使用方法
 它是用于记录OKHttp网络请求的日志的拦截器，纯 Kotlin 编写
 
-> init() 方法一定要调用，否则无法打印日志
-
 ## 3.1 在Java中使用
 
 ```java
-           init();
-
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.writeTimeout(30 * 1000, TimeUnit.MILLISECONDS);
             builder.readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
             builder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS);
 
-            LoggingInterceptor loggingInterceptor = new LoggingInterceptor.Builder()
-                    .loggable(true) // TODO: 发布到生产环境需要改成false
-                    .request()
-                    .requestTag("Request")
-                    .response()
-                    .responseTag("Response")
-                    //.hideVerticalLine()// 隐藏竖线边框
-                    .build();
+            LoggingInterceptor loggingInterceptor = AndroidLoggingInterceptor.build();
 
             //设置拦截器
             builder.addInterceptor(loggingInterceptor);
@@ -56,22 +45,13 @@ implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
 
 ## 3.2 在Kotlin中使用
 
-```kotlin
-        init();
-        
+```kotlin    
         val builder = OkHttpClient.Builder()
         builder.writeTimeout((30 * 1000).toLong(), TimeUnit.MILLISECONDS)
         builder.readTimeout((20 * 1000).toLong(), TimeUnit.MILLISECONDS)
         builder.connectTimeout((15 * 1000).toLong(), TimeUnit.MILLISECONDS)
 
-        val loggingInterceptor = LoggingInterceptor.Builder()
-                .loggable(true) // TODO: 发布到生产环境需要改成false
-                .request()
-                .requestTag("Request")
-                .response()
-                .responseTag("Response")
-                //.hideVerticalLine()// 隐藏竖线边框
-                .build()
+        val loggingInterceptor = AndroidLoggingInterceptor.build()
 
        //设置拦截器
        builder.addInterceptor(loggingInterceptor)
