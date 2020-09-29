@@ -42,7 +42,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "com.squareup.okhttp3:okhttp:${libs.okhttp3}"
-    api 'cn.netdiscovery.http.interceptor:okhttp-logging-interceptor:1.0.2'
+    api "cn.netdiscovery.http.interceptor:okhttp-logging-interceptor:${libs.okhttp_logging_interceptor}"
 }
 
 repositories {
@@ -67,7 +67,7 @@ publish{
     userOrg = 'fengzhizi715'
     groupId = 'com.safframework.log'
     artifactId = 'saf-logginginterceptor'
-    publishVersion = '1.5.2'
+    publishVersion = '1.6.0'
     desc = 'this is a log interceptor for okhttp,written by kotlin'
     website = 'https://github.com/fengzhizi715/saf-logginginterceptor'
 }

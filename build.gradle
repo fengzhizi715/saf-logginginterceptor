@@ -14,15 +14,15 @@ ext {
 
             appcompat                  : "1.2.0",
 
-            okhttp3                    : "4.8.0",
+            okhttp3                    : "4.9.0",
 
-            okhttp_logging_interceptor : "1.0.1"
+            okhttp_logging_interceptor : "1.1.0"
     ]
 }
 
 buildscript {
 
-    ext.kotlin_version = '1.4.0'
+    ext.kotlin_version = '1.4.10'
 
     repositories {
         google()
