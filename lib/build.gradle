@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'kotlin-android'
+
+group = 'com.github.fengzhizi715'
 
 def cfg = rootProject.ext.configuration // 配置
 def libs = rootProject.ext.libraries // 库
@@ -48,11 +49,13 @@ dependencies {
 repositories {
     mavenCentral()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
     //加上这些
     tasks.withType(Javadoc) {
@@ -61,13 +64,4 @@ allprojects {
             links "http://docs.oracle.com/javase/7/docs/api"
         }
     }
-}
-
-publish{
-    userOrg = 'fengzhizi715'
-    groupId = 'com.safframework.log'
-    artifactId = 'saf-logginginterceptor'
-    publishVersion = '1.6.0'
-    desc = 'this is a log interceptor for okhttp,written by kotlin'
-    website = 'https://github.com/fengzhizi715/saf-logginginterceptor'
 }
