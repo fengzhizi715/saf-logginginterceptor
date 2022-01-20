@@ -39,11 +39,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compileOnly "androidx.appcompat:appcompat:${libs.appcompat}"
     testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "com.squareup.okhttp3:okhttp:${libs.okhttp3}"
-    api "cn.netdiscovery.http.interceptor:okhttp-logging-interceptor:${libs.okhttp_logging_interceptor}"
+    implementation 'com.github.fengzhizi715.okhttp-logging-interceptor:core:v1.1.1'
 }
 
 repositories {

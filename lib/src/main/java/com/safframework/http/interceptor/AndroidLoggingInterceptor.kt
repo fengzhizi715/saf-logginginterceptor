@@ -36,7 +36,7 @@ object AndroidLoggingInterceptor {
                     .requestTag(requestTag)
                     .response()
                     .responseTag(responseTag)
-                    //.hideVerticalLine()// 隐藏竖线边框
+//                    .hideVerticalLine()// 隐藏竖线边框
                     .build()
         }
     }
