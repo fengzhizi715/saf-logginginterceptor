@@ -1,8 +1,8 @@
 # saf-logginginterceptor
 
 [![@Tony沈哲 on weibo](https://img.shields.io/badge/weibo-%40Tony%E6%B2%88%E5%93%B2-blue.svg)](http://www.weibo.com/fengzhizi715)
-[![Download](https://api.bintray.com/packages/fengzhizi715/maven/saf-logginginterceptor/images/download.svg)](https://bintray.com/fengzhizi715/maven/saf-logginginterceptor/_latestVersion)
 [![License](https://img.shields.io/badge/license-Apache%202-lightgrey.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![](https://jitpack.io/v/fengzhizi715/saf-logginginterceptor.svg)](https://jitpack.io/#fengzhizi715/saf-logginginterceptor)
 
 # 一. 特性
 
@@ -20,7 +20,19 @@
  它提供丰富的日志功能，它的 saf-log-okhttp 模块提供类似于该库的功能。
 
 # 二. 下载安装
-  Gradle:
+
+将它添加到项目的 root build.gradle 中：
+
+```groovy
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+Gradle:
 
 ```groovy
 implementation 'com.safframework.log:saf-logginginterceptor:1.6.0'
