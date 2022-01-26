@@ -38,4 +38,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     implementation project(":lib")
+    implementation "com.squareup.okhttp3:okhttp:${libs.okhttp3}"
 }
