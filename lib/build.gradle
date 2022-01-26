@@ -18,7 +18,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -48,7 +47,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "com.squareup.okhttp3:okhttp:${libs.okhttp3}"
     api 'com.github.fengzhizi715.okhttp-logging-interceptor:core:v1.1.1'
-    implementation 'com.android.support:multidex:1.0.3'
 }
 
 repositories {
