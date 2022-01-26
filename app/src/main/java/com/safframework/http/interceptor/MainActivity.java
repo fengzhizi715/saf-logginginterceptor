@@ -17,24 +17,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
-
-        Request request = new Request.Builder()
-                .get()
-                .url("https://api.github.com/users/fengzhizi715")
-                .build();
-
-        Call call = HttpLoggingInterceptorUtil.getClient().newCall(request);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-
-            }
-        });
     }
 }
