@@ -55,6 +55,20 @@ implementation 'com.github.fengzhizi715:saf-logginginterceptor:v1.6.12'
             builder.addInterceptor(loggingInterceptor);
 ```
 
+如果需要去除竖线
+
+```java
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.writeTimeout(30 * 1000, TimeUnit.MILLISECONDS);
+            builder.readTimeout(20 * 1000, TimeUnit.MILLISECONDS);
+            builder.connectTimeout(15 * 1000, TimeUnit.MILLISECONDS);
+
+            LoggingInterceptor loggingInterceptor = AndroidLoggingInterceptor.build(true,true);
+
+            //设置拦截器
+            builder.addInterceptor(loggingInterceptor);
+```
+
 ## 3.2 在 Kotlin 中使用
 
 ```kotlin    
@@ -64,6 +78,20 @@ implementation 'com.github.fengzhizi715:saf-logginginterceptor:v1.6.12'
         builder.connectTimeout((15 * 1000).toLong(), TimeUnit.MILLISECONDS)
 
         val loggingInterceptor = AndroidLoggingInterceptor.build()
+
+       //设置拦截器
+       builder.addInterceptor(loggingInterceptor)
+```
+
+如果需要去除竖线
+
+```kotlin    
+        val builder = OkHttpClient.Builder()
+        builder.writeTimeout((30 * 1000).toLong(), TimeUnit.MILLISECONDS)
+        builder.readTimeout((20 * 1000).toLong(), TimeUnit.MILLISECONDS)
+        builder.connectTimeout((15 * 1000).toLong(), TimeUnit.MILLISECONDS)
+
+        val loggingInterceptor = AndroidLoggingInterceptor.build(hideVerticalLine=true)
 
        //设置拦截器
        builder.addInterceptor(loggingInterceptor)
