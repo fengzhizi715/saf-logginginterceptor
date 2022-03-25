@@ -12,7 +12,7 @@ ext {
     libraries = [
             okhttp3                    : "4.9.2",
 
-            okhttp_logging_interceptor : "v1.1.1"
+            okhttp_logging_interceptor : "v1.1.2"
     ]
 }
 
