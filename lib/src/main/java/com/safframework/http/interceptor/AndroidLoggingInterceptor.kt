@@ -18,14 +18,14 @@ object AndroidLoggingInterceptor {
 
         init()
 
-        val build = LoggingInterceptor.Builder()
+        val builder = LoggingInterceptor.Builder()
 
         if (excludeList.isNotEmpty()) {
-            build.excludeList.addAll(excludeList)
+            builder.excludeList.addAll(excludeList)
         }
 
         return if (hideVerticalLine) {
-            build
+            builder
                 .loggable(isDebug) // TODO: 发布到生产环境需要改成false
                 .androidPlatform()
                 .request()
@@ -35,7 +35,7 @@ object AndroidLoggingInterceptor {
                 .hideVerticalLine()// 隐藏竖线边框
                 .build()
         } else {
-            build
+            builder
                 .loggable(isDebug) // TODO: 发布到生产环境需要改成false
                 .androidPlatform()
                 .request()
